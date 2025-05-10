@@ -96,4 +96,4 @@ build/
 include/SDL2
 include/SDL2_image
 lib/SDL2_image
-lib/SDL2v
+lib/SDL2
