@@ -14,7 +14,11 @@ file(GLOB_RECURSE PLATFORM_SOURCES CONFIGURE_DEPENDS "${CMAKE_SOURCE_DIR}/platfo
 add_executable(${PROJECT_NAME} ${GAME_SOURCES} ${PLATFORM_SOURCES})
 
 # Add include directories (SDL2, SDL2_image, and game/platform header files)
-target_include_directories(${PROJECT_NAME} PRIVATE "${CMAKE_SOURCE_DIR}/include")
+target_include_directories(${PROJECT_NAME} 
+    PRIVATE
+    "${CMAKE_SOURCE_DIR}/include"
+    "${CMAKE_SOURCE_DIR}/include/SDL2"
+)
 target_include_directories(${PROJECT_NAME} PUBLIC "${CMAKE_SOURCE_DIR}/game/include")
 target_include_directories(${PROJECT_NAME} PUBLIC "${CMAKE_SOURCE_DIR}/platform/include")
 
