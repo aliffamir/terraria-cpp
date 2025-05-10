@@ -72,7 +72,7 @@ SDL_Texture *loadTexture(std::string path)
     SDL_Surface *loadedSurface = IMG_Load(path.c_str());
     if (!loadedSurface)
     {
-        std::print("Failed to laod image {0}. SDL_image Error: {1}\n", path, IMG_GetError());
+        std::print("Failed to load image {0}. SDL_image Error: {1}\n", path, IMG_GetError());
     }
     else
     {
@@ -95,7 +95,7 @@ bool loadMedia()
     bool isSuccess = true;
 
     // Load PNG texture into global texture variable
-    gTexture = loadTexture("assets/pacman.png");
+    gTexture = loadTexture("../assets/pacman.png"); // use relative path for now (need to figure out how to set the path from CMakeLists)
     if (!gTexture)
     {
         std::print("Failed to load texture image.\n");
