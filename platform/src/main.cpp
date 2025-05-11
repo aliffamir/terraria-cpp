@@ -5,13 +5,6 @@
 #include <print>
 #include <string>
 
-constexpr int SCREEN_WIDTH = 800;
-constexpr int SCREEN_HEIGHT = 400;
-
-SDL_Window* gWindow = nullptr;
-SDL_Renderer* gRenderer = nullptr;
-SDL_Texture* gTexture = nullptr;
-
 enum KeyPressSurfaces
 {
     KEY_PRESS_SURFACE_DEFAULT,
@@ -21,6 +14,14 @@ enum KeyPressSurfaces
     KEY_PRESS_SURFACE_RIGHT,
     KEY_PRESS_SURFACE_TOTAL,
 };
+constexpr int SCREEN_WIDTH = 800;
+constexpr int SCREEN_HEIGHT = 400;
+
+SDL_Window* gWindow = nullptr;
+SDL_Renderer* gRenderer = nullptr;
+SDL_Texture* gTexture = nullptr;
+SDL_Texture* gKeyPressTextures[KEY_PRESS_SURFACE_TOTAL];
+SDL_Surface* gScreenSurface = nullptr;
 
 bool init()
 {
@@ -106,12 +107,43 @@ bool loadMedia()
 {
     bool isSuccess = true;
 
-    // Load PNG texture into global texture variable
-    gTexture = loadTexture("../assets/pacman.png"); // use relative path for now (need to figure out
-                                                    // how to set the path from CMakeLists)
-    if (!gTexture)
+    // // Load PNG texture into global texture variable
+    // gTexture = loadTexture("../assets/pacman.png"); // use relative path for now (need to figure out
+    //                                                 // how to set the path from CMakeLists)
+    // if (!gTexture)
+    // {
+    //     std::print("Failed to load texture image.\n");
+    //     isSuccess = false;
+    // }
+
+    gKeyPressTextures[KEY_PRESS_SURFACE_DEFAULT] = loadTexture("../assets/press.png");
+    if (!gKeyPressTextures[KEY_PRESS_SURFACE_DEFAULT])
     {
-        std::print("Failed to load texture image.\n");
+        std::print("Failed to load defaut image!\n");
+        isSuccess = false;
+    }
+    gKeyPressTextures[KEY_PRESS_SURFACE_LEFT] = loadTexture("../assets/left.png");
+    if (!gKeyPressTextures[KEY_PRESS_SURFACE_LEFT])
+    {
+        std::print("Failed to load left image!\n");
+        isSuccess = false;
+    }
+    gKeyPressTextures[KEY_PRESS_SURFACE_UP] = loadTexture("../assets/up.png");
+    if (!gKeyPressTextures[KEY_PRESS_SURFACE_UP])
+    {
+        std::print("Failed to load up image!\n");
+        isSuccess = false;
+    }
+    gKeyPressTextures[KEY_PRESS_SURFACE_RIGHT] = loadTexture("../assets/right.png");
+    if (!gKeyPressTextures[KEY_PRESS_SURFACE_RIGHT])
+    {
+        std::print("Failed to load right image!\n");
+        isSuccess = false;
+    }
+    gKeyPressTextures[KEY_PRESS_SURFACE_DOWN] = loadTexture("../assets/down.png");
+    if (!gKeyPressTextures[KEY_PRESS_SURFACE_DOWN])
+    {
+        std::print("Failed to load down image!\n");
         isSuccess = false;
     }
 
@@ -165,6 +197,31 @@ int main(int argc, char* argv[])
                     if (e.type == SDL_QUIT)
                     {
                         quit = true;
+                    }
+                    else if (e.type == SDL_KEYDOWN)
+                    {
+                        switch (e.key.keysym.sym)
+                        {
+                        case SDLK_UP:
+                            gTexture = gKeyPressTextures[KEY_PRESS_SURFACE_UP];
+                            break;
+
+                        case SDLK_DOWN:
+                            gTexture = gKeyPressTextures[KEY_PRESS_SURFACE_DOWN];
+                            break;
+
+                        case SDLK_LEFT:
+                            gTexture = gKeyPressTextures[KEY_PRESS_SURFACE_LEFT];
+                            break;
+
+                        case SDLK_RIGHT:
+                            gTexture = gKeyPressTextures[KEY_PRESS_SURFACE_RIGHT];
+                            break;
+
+                        default:
+                            gTexture = gKeyPressTextures[KEY_PRESS_SURFACE_DEFAULT];
+                            break;
+                        }
                     }
                 }
 
