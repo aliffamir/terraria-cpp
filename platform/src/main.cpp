@@ -1,15 +1,26 @@
+#include <SDL2/SDL.h>
+#include <SDL2_image/SDL_image.h>
+
 #include <iostream>
 #include <print>
 #include <string>
-#include <SDL2/SDL.h>
-#include <SDL2_image/SDL_image.h>
 
 constexpr int SCREEN_WIDTH = 800;
 constexpr int SCREEN_HEIGHT = 400;
 
-SDL_Window *gWindow = nullptr;
-SDL_Renderer *gRenderer = nullptr;
-SDL_Texture *gTexture = nullptr;
+SDL_Window* gWindow = nullptr;
+SDL_Renderer* gRenderer = nullptr;
+SDL_Texture* gTexture = nullptr;
+
+enum KeyPressSurfaces
+{
+    KEY_PRESS_SURFACE_DEFAULT,
+    KEY_PRESS_SURFACE_UP,
+    KEY_PRESS_SURFACE_DOWN,
+    KEY_PRESS_SURFACE_LEFT,
+    KEY_PRESS_SURFACE_RIGHT,
+    KEY_PRESS_SURFACE_TOTAL,
+};
 
 bool init()
 {
@@ -29,7 +40,8 @@ bool init()
         }
 
         // Create window
-        gWindow = SDL_CreateWindow("Terraria CPP", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN);
+        gWindow = SDL_CreateWindow("Terraria CPP", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH,
+                                   SCREEN_HEIGHT, SDL_WINDOW_SHOWN);
         if (!gWindow)
         {
             std::print("Window could not be created. SDL Error: {}\n", SDL_GetError());
@@ -63,13 +75,13 @@ bool init()
     return isSuccess;
 }
 
-SDL_Texture *loadTexture(std::string path)
+SDL_Texture* loadTexture(std::string path)
 {
     // The final texture that we will return
-    SDL_Texture *newTexture = nullptr;
+    SDL_Texture* newTexture = nullptr;
 
     // Load the image at the specified path
-    SDL_Surface *loadedSurface = IMG_Load(path.c_str());
+    SDL_Surface* loadedSurface = IMG_Load(path.c_str());
     if (!loadedSurface)
     {
         std::print("Failed to load image {0}. SDL_image Error: {1}\n", path, IMG_GetError());
@@ -95,7 +107,8 @@ bool loadMedia()
     bool isSuccess = true;
 
     // Load PNG texture into global texture variable
-    gTexture = loadTexture("../assets/pacman.png"); // use relative path for now (need to figure out how to set the path from CMakeLists)
+    gTexture = loadTexture("../assets/pacman.png"); // use relative path for now (need to figure out
+                                                    // how to set the path from CMakeLists)
     if (!gTexture)
     {
         std::print("Failed to load texture image.\n");
@@ -122,7 +135,7 @@ void close()
     SDL_Quit();
 }
 
-int main(int argc, char *argv[])
+int main(int argc, char* argv[])
 {
     // Start up SDL and create window
     if (!init())
