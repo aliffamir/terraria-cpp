@@ -61,10 +61,7 @@ void processEvent(Input& input, const SDL_Event& e)
     switch (e.type)
     {
     case SDL_KEYDOWN:
-        if (!e.key.repeat)
-        {
-            processEventButton(input.keys[e.key.keysym.scancode], true);
-        }
+        processEventButton(input.keys[e.key.keysym.scancode], true);
         break;
 
     case SDL_KEYUP:
