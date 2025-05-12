@@ -5,23 +5,18 @@
 #include <print>
 #include <string>
 
-enum KeyPressSurfaces
-{
-    KEY_PRESS_SURFACE_DEFAULT,
-    KEY_PRESS_SURFACE_UP,
-    KEY_PRESS_SURFACE_DOWN,
-    KEY_PRESS_SURFACE_LEFT,
-    KEY_PRESS_SURFACE_RIGHT,
-    KEY_PRESS_SURFACE_TOTAL,
-};
+#include "FrameOutput.h"
+#include "GameLogic.h"
+#include "GameWindowBuffer.h"
+#include "Input.h"
+
 constexpr int SCREEN_WIDTH = 800;
 constexpr int SCREEN_HEIGHT = 400;
 
 SDL_Window* gWindow = nullptr;
 SDL_Renderer* gRenderer = nullptr;
-SDL_Texture* gTexture = nullptr;
-SDL_Texture* gKeyPressTextures[KEY_PRESS_SURFACE_TOTAL];
-SDL_Surface* gScreenSurface = nullptr;
+
+GameWindowBuffer gBuffer;
 
 bool init()
 {
@@ -60,91 +55,11 @@ bool init()
             else
             {
                 // Initialise renderer color (background)
-                SDL_SetRenderDrawColor(gRenderer, 0xFF, 0xFF, 0xFF, 0xFF);
+                SDL_SetRenderDrawColor(gRenderer, 0, 0, 0, 255);
 
-                // Initialise PNG loading
-                int imgFlags = IMG_INIT_PNG;
-                if (!(IMG_Init(imgFlags) & imgFlags))
-                {
-                    std::print("SDL_image coulud not initialise. SDL_image Error: {}\n", IMG_GetError());
-                    isSuccess = false;
-                }
+                return resetWindowBuffer(gBuffer, gRenderer, SCREEN_WIDTH, SCREEN_HEIGHT);
             }
         }
-    }
-
-    return isSuccess;
-}
-
-SDL_Texture* loadTexture(std::string path)
-{
-    // The final texture that we will return
-    SDL_Texture* newTexture = nullptr;
-
-    // Load the image at the specified path
-    SDL_Surface* loadedSurface = IMG_Load(path.c_str());
-    if (!loadedSurface)
-    {
-        std::print("Failed to load image {0}. SDL_image Error: {1}\n", path, IMG_GetError());
-    }
-    else
-    {
-        // Create texture from surface pixels - Converts SDL Surface to Texture
-        newTexture = SDL_CreateTextureFromSurface(gRenderer, loadedSurface);
-        if (!newTexture)
-        {
-            std::print("Failed to create texture {0}. SDL Error: {1}\n", path, SDL_GetError());
-        }
-
-        // Free loaded surface from memory
-        SDL_FreeSurface(loadedSurface);
-    }
-
-    return newTexture;
-}
-
-bool loadMedia()
-{
-    bool isSuccess = true;
-
-    // // Load PNG texture into global texture variable
-    // gTexture = loadTexture("../assets/pacman.png"); // use relative path for now (need to figure out
-    //                                                 // how to set the path from CMakeLists)
-    // if (!gTexture)
-    // {
-    //     std::print("Failed to load texture image.\n");
-    //     isSuccess = false;
-    // }
-
-    gKeyPressTextures[KEY_PRESS_SURFACE_DEFAULT] = loadTexture("../assets/press.png");
-    if (!gKeyPressTextures[KEY_PRESS_SURFACE_DEFAULT])
-    {
-        std::print("Failed to load defaut image!\n");
-        isSuccess = false;
-    }
-    gKeyPressTextures[KEY_PRESS_SURFACE_LEFT] = loadTexture("../assets/left.png");
-    if (!gKeyPressTextures[KEY_PRESS_SURFACE_LEFT])
-    {
-        std::print("Failed to load left image!\n");
-        isSuccess = false;
-    }
-    gKeyPressTextures[KEY_PRESS_SURFACE_UP] = loadTexture("../assets/up.png");
-    if (!gKeyPressTextures[KEY_PRESS_SURFACE_UP])
-    {
-        std::print("Failed to load up image!\n");
-        isSuccess = false;
-    }
-    gKeyPressTextures[KEY_PRESS_SURFACE_RIGHT] = loadTexture("../assets/right.png");
-    if (!gKeyPressTextures[KEY_PRESS_SURFACE_RIGHT])
-    {
-        std::print("Failed to load right image!\n");
-        isSuccess = false;
-    }
-    gKeyPressTextures[KEY_PRESS_SURFACE_DOWN] = loadTexture("../assets/down.png");
-    if (!gKeyPressTextures[KEY_PRESS_SURFACE_DOWN])
-    {
-        std::print("Failed to load down image!\n");
-        isSuccess = false;
     }
 
     return isSuccess;
@@ -153,8 +68,8 @@ bool loadMedia()
 void close()
 {
     // Free loaded image
-    SDL_DestroyTexture(gTexture);
-    gTexture = nullptr;
+    SDL_DestroyTexture(gBuffer.texture);
+    gBuffer.texture = nullptr;
 
     // Destroy window
     SDL_DestroyRenderer(gRenderer);
@@ -172,71 +87,97 @@ int main(int argc, char* argv[])
     // Start up SDL and create window
     if (!init())
     {
-        std::print("Failed to initialise SDL\n");
+        std::print("Failed to initialise SDL!\n");
+    }
+    else if (!initGameplay())
+    {
+        std::print("Failed to initialise game!\n");
     }
     else
     {
-        if (!loadMedia())
-        {
-            std::print("Failed to load media.\n");
-        }
-        else
-        {
-            // Main loop flag
-            bool quit = false;
+        // Main loop flag
+        bool quit = false;
 
-            // Event handler
-            SDL_Event e;
+        // Event handler
+        SDL_Event e;
 
-            // Main  loop
-            while (!quit)
+        Input input;
+        FrameOutput frame;
+
+        int rectX = 100;
+        int rectY = 100;
+        const int rectSize = 100;
+
+        auto stop = std::chrono::high_resolution_clock::now();
+
+        // Main  loop
+        while (!quit)
+        {
+            auto start = std::chrono::high_resolution_clock::now();
+            double deltaTime =
+                (std::chrono::duration_cast<std::chrono::microseconds>(start - stop)).count() / 1000000.0;
+            stop = std::chrono::high_resolution_clock::now();
+
+            // we don't want delta time to drop too low, like let's say under 5 fps. you can set this to whatever you
+            // want
+            // or remove it but I recomand keeping it
+            float augmentedDeltaTime = deltaTime;
+            if (augmentedDeltaTime > 1.0 / 5)
             {
-                // Event loop - handles events on queue
-                while (SDL_PollEvent(&e) != 0)
+                augmentedDeltaTime = 1.0 / 5;
+            }
+
+            // Event loop - handles events on queue
+            while (SDL_PollEvent(&e) != 0)
+            {
+                if (e.type == SDL_QUIT)
                 {
-                    if (e.type == SDL_QUIT)
-                    {
-                        quit = true;
-                    }
-                    else if (e.type == SDL_KEYDOWN)
-                    {
-                        switch (e.key.keysym.sym)
-                        {
-                        case SDLK_UP:
-                            gTexture = gKeyPressTextures[KEY_PRESS_SURFACE_UP];
-                            break;
-
-                        case SDLK_DOWN:
-                            gTexture = gKeyPressTextures[KEY_PRESS_SURFACE_DOWN];
-                            break;
-
-                        case SDLK_LEFT:
-                            gTexture = gKeyPressTextures[KEY_PRESS_SURFACE_LEFT];
-                            break;
-
-                        case SDLK_RIGHT:
-                            gTexture = gKeyPressTextures[KEY_PRESS_SURFACE_RIGHT];
-                            break;
-
-                        default:
-                            gTexture = gKeyPressTextures[KEY_PRESS_SURFACE_DEFAULT];
-                            break;
-                        }
-                    }
+                    quit = true;
                 }
 
-                // Clear screen
-                SDL_RenderClear(gRenderer);
-
-                // Render texture to screen
-                SDL_RenderCopy(gRenderer, gTexture, nullptr, nullptr);
-
-                // Update screen
-                SDL_RenderPresent(gRenderer);
+                processEvent(input, e);
             }
+
+            frame.rects.clear();
+
+            if (!gameplayFrame(augmentedDeltaTime, SCREEN_WIDTH, SCREEN_HEIGHT, input, frame))
+            {
+                std::print("Failed to process gameplay frame!\n");
+                break;
+            }
+
+            gBuffer.clear(0, 0, 0);
+
+            // Render frame output
+            for (const auto& rect : frame.rects)
+            {
+                for (int y = 0; y < rect.h; ++y)
+                {
+                    for (int x = 0; x < rect.w; ++x)
+                    {
+                        gBuffer.draw(rect.x + x, rect.y + y, rect.r, rect.g, rect.b, rect.a);
+                    }
+                }
+            }
+
+            // Push buffer to screen
+            renderBufferToScreen(gRenderer, gBuffer);
+            SDL_RenderPresent(gRenderer);
+
+            processInputAfter(input);
+
+            // // Clear screen
+            // SDL_RenderClear(gRenderer);
+
+            // // Render texture to screen
+            // SDL_RenderCopy(gRenderer, gTexture, nullptr, nullptr);
+
+            // // Update screen
+            // SDL_RenderPresent(gRenderer);
         }
     }
 
+    closeGameLogic();
     // Free resources and close SDL
     close();
 
