@@ -1,4 +1,4 @@
-#include "input.h"
+#include "Input.h"
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_events.h>
 #include <cstring>

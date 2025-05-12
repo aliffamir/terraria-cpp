@@ -1,6 +1,7 @@
-#ifndef Input_H
-#define Input_H
+#ifndef INPUT_H
+#define INPUT_H
 
+#include <SDL2/SDL.h>
 #include <SDL2/SDL_keycode.h>
 #include <array>
 
@@ -32,6 +33,6 @@ struct Input
 // Forward declarations
 void processInputAfter(Input& input);
 void resetInput(Input& input);
-void processEventButton(Button& button, bool newState);
+void processEvent(Input& input, const SDL_Event& e);
 
 #endif
