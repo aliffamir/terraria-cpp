@@ -8,7 +8,6 @@ set(CMAKE_CXX_EXTENSIONS        OFF)
 
 # Gather source files to compile - use wildcard *.cpp
 file(GLOB_RECURSE GAME_SOURCES CONFIGURE_DEPENDS "${CMAKE_SOURCE_DIR}/game/src/*.cpp")
-file(GLOB_RECURSE PLATFORM_SOURCES CONFIGURE_DEPENDS "${CMAKE_SOURCE_DIR}/platform/src/*.cpp")
 
 # Create executables
 add_executable(${PROJECT_NAME} ${GAME_SOURCES} ${PLATFORM_SOURCES})
@@ -20,7 +19,6 @@ target_include_directories(${PROJECT_NAME}
     "${CMAKE_SOURCE_DIR}/include/SDL2"
 )
 target_include_directories(${PROJECT_NAME} PUBLIC "${CMAKE_SOURCE_DIR}/game/include")
-target_include_directories(${PROJECT_NAME} PUBLIC "${CMAKE_SOURCE_DIR}/platform/include")
 
 # Link libraries
 target_link_libraries(${PROJECT_NAME}
