@@ -15,8 +15,10 @@ struct Button
 
 struct Input
 {
-    // C-style array of Buttons - using the SDL_Scancode enum (https://wiki.libsdl.org/SDL2/SDL_Scancode)
-    Button keys[SDL_NUM_SCANCODES];
+    // Array of buttons - each element is key on our keyboard and has all the states defined in the Button struct
+    // using the SDL_Scancode enum (https://wiki.libsdl.org/SDL2/SDL_Scancode)
+    std::array<Button, SDL_NUM_SCANCODES> keys{};
+    // Button keys[SDL_NUM_SCANCODES];
 
     int cursorX{0};
     int cursorY{0};
