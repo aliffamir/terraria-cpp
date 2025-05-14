@@ -19,7 +19,7 @@ class Game
     void draw(Graphics& graphics);
 
     /* Updates the state of our game every frame (i.e. player, world, enemy) */
-    void update();
+    void update(float deltaTime);
 };
 
 #endif
