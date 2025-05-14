@@ -9,6 +9,7 @@ struct SDL_Window;
 struct SDL_Renderer;
 struct SDL_Texture;
 struct SDL_Rect;
+struct SDL_Surface;
 
 class Graphics
 {
