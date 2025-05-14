@@ -12,7 +12,7 @@ Graphics::Graphics()
     fallback to SDL_RENDERER_PRESENTVSYNC
     see (https://wiki.libsdl.org/SDL2/SDL_RendererFlags)
     */
-    _renderer = SDL_CreateRenderer(_window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
+    _renderer = SDL_CreateRenderer(_window, -1, SDL_RENDERER_ACCELERATED);
 }
 
 Graphics::~Graphics()
@@ -28,14 +28,14 @@ Graphics::~Graphics()
 
 SDL_Surface* Graphics::loadImage(const std::string& filePath)
 {
-    if (_spriteSheets.contains(filePath))
+    if (!_spriteSheets.contains(filePath))
     {
         _spriteSheets[filePath] = IMG_Load(filePath.c_str());
     }
     return _spriteSheets[filePath];
 }
 
-void Graphics::blitSurface(SDL_Texture* texture, const SDL_Rect* sourceRect, const SDL_Rect* destinationRect)
+void Graphics::blitSurface(SDL_Texture* texture, SDL_Rect* sourceRect, SDL_Rect* destinationRect)
 {
     SDL_RenderCopy(_renderer, texture, sourceRect, destinationRect);
 }

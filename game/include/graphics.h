@@ -24,7 +24,7 @@ class Graphics
     */
     SDL_Surface* loadImage(const std::string& filePath);
 
-    void blitSurface(SDL_Texture* texture, const SDL_Rect* sourceRect, const SDL_Rect* destinationRect);
+    void blitSurface(SDL_Texture* texture, SDL_Rect* sourceRect, SDL_Rect* destinationRect);
     void flip();
     void clear();
     SDL_Renderer* getRenderer() const;

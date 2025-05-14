@@ -3,8 +3,9 @@
 
 namespace Globals
 {
-int SCREEN_WIDTH = 800;
-int SCREEN_HEIGHT = 400;
+constexpr int SCREEN_WIDTH = 800;
+constexpr int SCREEN_HEIGHT = 400;
+constexpr float SPRITE_SCALE = 2.0f;
 } // namespace Globals
 
 enum Direction

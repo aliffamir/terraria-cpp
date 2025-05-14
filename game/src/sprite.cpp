@@ -1,4 +1,5 @@
 #include "sprite.h"
+#include "globals.h"
 #include "graphics.h"
 #include <print>
 
@@ -22,12 +23,12 @@ Sprite::Sprite(Graphics& graphics, const std::string& filePath, int sourceX, int
 
 Sprite::~Sprite()
 {
-    SDL_DestroyTexture(_spriteSheet);
 }
 
 void Sprite::draw(Graphics& graphics, int x, int y)
 {
-    SDL_Rect destinationRectangle{x, y, _sourceRect.w, _sourceRect.h};
+    SDL_Rect destinationRectangle{x, y, static_cast<int>(_sourceRect.w * Globals::SPRITE_SCALE),
+                                  static_cast<int>(_sourceRect.h * Globals::SPRITE_SCALE)};
     graphics.blitSurface(_spriteSheet, &_sourceRect, &destinationRectangle);
 }
 
