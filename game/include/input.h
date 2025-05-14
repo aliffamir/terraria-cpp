@@ -22,6 +22,6 @@ class Input
     std::map<SDL_Scancode, bool> _pressedKeys;
     std::map<SDL_Scancode, bool> _releasedKeys;
     std::map<SDL_Scancode, bool> _heldKeys;
-}
+};
 
 #endif
