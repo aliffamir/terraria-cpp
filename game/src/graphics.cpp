@@ -1,6 +1,7 @@
 #include "graphics.h"
 #include "globals.h"
 #include <SDL2/SDL.h>
+#include <SDL2_image/SDL_image.h>
 
 Graphics::Graphics()
 {
@@ -25,6 +26,11 @@ Graphics::~Graphics()
     }
 }
 
+SDL_Surface* Graphics::loadImage(const std::string& filePath)
+{
+    return IMG_Load(filePath.c_str());
+}
+
 void Graphics::blitSurface(SDL_Texture* texture, const SDL_Rect* sourceRect, const SDL_Rect* destinationRect)
 {
     SDL_RenderCopy(_renderer, texture, sourceRect, destinationRect);
@@ -38,4 +44,9 @@ void Graphics::flip()
 void Graphics::clear()
 {
     SDL_RenderClear(_renderer);
+}
+
+SDL_Renderer* Graphics::getRenderer() const
+{
+    return _renderer;
 }
