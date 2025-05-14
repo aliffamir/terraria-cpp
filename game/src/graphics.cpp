@@ -1,0 +1,41 @@
+#include "graphics.h"
+#include "globals.h"
+#include <SDL2/SDL.h>
+
+Graphics::Graphics()
+{
+    _window = SDL_CreateWindow("Terraria from Scratch", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED,
+                               Globals::SCREEN_WIDTH, Globals::SCREEN_HEIGHT, 0);
+    /*
+    SDL_RENDERER_ACCELERATED enforces hardware acceleration (GPU)
+    fallback to SDL_RENDERER_PRESENTVSYNC
+    see (https://wiki.libsdl.org/SDL2/SDL_RendererFlags)
+    */
+    _renderer = SDL_CreateRenderer(_window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
+}
+
+Graphics::~Graphics()
+{
+    if (SDL_WasInit(SDL_INIT_EVERYTHING))
+    {
+        if (_window)
+            SDL_DestroyWindow(_window);
+        if (_renderer)
+            SDL_DestroyRenderer(_renderer);
+    }
+}
+
+void Graphics::blitSurface(SDL_Texture* texture, const SDL_Rect* sourceRect, const SDL_Rect* destinationRect)
+{
+    SDL_RenderCopy(_renderer, texture, sourceRect, destinationRect);
+}
+
+void Graphics::flip()
+{
+    SDL_RenderPresent(_renderer);
+}
+
+void Graphics::clear()
+{
+    SDL_RenderClear(_renderer);
+}
