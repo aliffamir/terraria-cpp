@@ -28,7 +28,11 @@ Graphics::~Graphics()
 
 SDL_Surface* Graphics::loadImage(const std::string& filePath)
 {
-    return IMG_Load(filePath.c_str());
+    if (_spriteSheets.contains(filePath))
+    {
+        _spriteSheets[filePath] = IMG_Load(filePath.c_str());
+    }
+    return _spriteSheets[filePath];
 }
 
 void Graphics::blitSurface(SDL_Texture* texture, const SDL_Rect* sourceRect, const SDL_Rect* destinationRect)
