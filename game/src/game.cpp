@@ -21,13 +21,13 @@ void Game::gameLoop()
 {
     Graphics graphics;
 
-    SDL_Event e;
+    SDL_Event event;
 
     while (true)
     {
-        while (SDL_PollEvent(&e))
+        while (SDL_PollEvent(&event))
         {
-            if (e.type == SDL_QUIT)
+            if (event.type == SDL_QUIT)
             {
                 return;
             }

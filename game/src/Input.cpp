@@ -1,98 +1,39 @@
-#include "Input.h"
-#include <SDL2/SDL.h>
-#include <SDL2/SDL_events.h>
-#include <cstring>
+#include "input.h"
 
-void processInputAfter(Input& input)
+Input::Input() {};
+Input::~Input() {};
+
+// Called at the beginning of each new frame
+// to reset the keys that are no longer relevant
+void Input::beginNewFrame()
 {
-    for (int i = 0; i < SDL_NUM_SCANCODES; ++i)
-    {
-        input.keys[i].pressed = false;
-        input.keys[i].held = false;
-        input.keys[i].released = false;
-    }
-
-    input.leftMouseButton.pressed = false;
-    input.leftMouseButton.held = false;
-    input.leftMouseButton.released = false;
-
-    input.rightMouseButton.pressed = false;
-    input.rightMouseButton.held = false;
-    input.rightMouseButton.released = false;
-
-    input.typedInput = {};
+    _pressedKeys.clear();
+    _releasedKeys.clear();
 }
 
-void resetInput(Input& input)
+void Input::keyDownEvent(const SDL_Event& event)
 {
-    input.leftMouseButton = {};
-    input.rightMouseButton = {};
-
-    for (int i = 0; i < SDL_NUM_SCANCODES; ++i)
-    {
-        input.keys[i] = {};
-    }
-    input.typedInput = {};
+    _pressedKeys[event.key.keysym.scancode] = true;
+    _heldKeys[event.key.keysym.scancode] = true;
 }
 
-void processEventButton(Button& button, bool newState)
+void Input::keyUpEvent(const SDL_Event& event)
 {
-    // if button is pressed - newState == 1
-    if (newState)
-    {
-        // if button is not currently being held set pressed and held to true
-        if (!button.held)
-        {
-            button.pressed = true;
-            button.held = true;
-            button.released = false;
-        }
-    }
-    else
-    {
-        button.pressed = false;
-        button.held = false;
-        button.released = true;
-    }
+    _releasedKeys[event.key.keysym.scancode] = true;
+    _heldKeys[event.key.keysym.scancode] = false;
 }
 
-void processEvent(Input& input, const SDL_Event& e)
+bool Input::wasKeyPressed(SDL_Scancode key)
 {
-    switch (e.type)
-    {
-    case SDL_KEYDOWN:
-        processEventButton(input.keys[e.key.keysym.scancode], true);
-        break;
+    return _pressedKeys[key];
+}
 
-    case SDL_KEYUP:
-        processEventButton(input.keys[e.key.keysym.scancode], false);
-        break;
+bool Input::wasKeyReleased(SDL_Scancode key)
+{
+    return _releasedKeys[key];
+}
 
-    case SDL_MOUSEBUTTONDOWN:
-        if (e.button.button == SDL_BUTTON_LEFT)
-        {
-            processEventButton(input.leftMouseButton, true);
-        }
-        else if (e.button.button == SDL_BUTTON_RIGHT)
-        {
-            processEventButton(input.rightMouseButton, true);
-        }
-        break;
-
-    case SDL_MOUSEBUTTONUP:
-        if (e.button.button == SDL_BUTTON_LEFT)
-        {
-            processEventButton(input.leftMouseButton, false);
-        }
-        else if (e.button.button == SDL_BUTTON_RIGHT)
-        {
-            processEventButton(input.rightMouseButton, false);
-        }
-        break;
-
-    case SDL_MOUSEMOTION:
-        input.cursorX = e.motion.x;
-        input.cursorY = e.motion.y;
-        break;
-    }
+bool Input::isKeyHeld(SDL_Scancode key)
+{
+    return _heldKeys[key];
 }

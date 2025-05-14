@@ -1,40 +1,27 @@
 #ifndef INPUT_H
-#define INPUT_H
+#define INPUT
 
 #include <SDL2/SDL.h>
-#include <SDL2/SDL_keycode.h>
-#include <array>
+#include <map>
 
-struct Button
+class Input
 {
-    bool pressed{0};
-    bool held{0};
-    bool released{0};
-    bool altDown{0};
-};
+  public:
+    Input();
+    ~Input();
 
-struct Input
-{
-    // Array of buttons - each element is key on our keyboard and has all the states defined in the Button struct
-    // using the SDL_Scancode enum (https://wiki.libsdl.org/SDL2/SDL_Scancode)
-    std::array<Button, SDL_NUM_SCANCODES> keys{};
-    // Button keys[SDL_NUM_SCANCODES];
+    void beginNewFrame();
+    void keyUpEvent(const SDL_Event& event);
+    void keyDownEvent(const SDL_Event& event);
 
-    int cursorX{0};
-    int cursorY{0};
+    bool wasKeyPressed(SDL_Scancode key);
+    bool wasKeyReleased(SDL_Scancode key);
+    bool isKeyHeld(SDL_Scancode key);
 
-    Button leftMouseButton{};
-    Button rightMouseButton{};
-
-    std::array<char, 20> typedInput{};
-
-    // To track if window is in focus
-    bool focused = false;
-};
-
-// Forward declarations
-void processInputAfter(Input& input);
-void resetInput(Input& input);
-void processEvent(Input& input, const SDL_Event& e);
+  private:
+    std::map<SDL_Scancode, bool> _pressedKeys;
+    std::map<SDL_Scancode, bool> _releasedKeys;
+    std::map<SDL_Scancode, bool> _heldKeys;
+}
 
 #endif
