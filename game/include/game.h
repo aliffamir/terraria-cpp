@@ -1,7 +1,7 @@
 #ifndef GAME_H
 #define GAME_H
 
-#include "graphics.h"
+class Graphics;
 
 class Game
 {
@@ -10,7 +10,7 @@ class Game
     ~Game();
 
   private:
-    /* 
+    /*
     Main game loop
     */
     void gameLoop();
