@@ -1,7 +1,7 @@
 #ifndef GAME_H
 #define GAME_H
 
-#include "sprite.h"
+#include "animatedsprite.h"
 
 class Graphics;
 
@@ -23,7 +23,7 @@ class Game
     /* Updates the state of our game every frame (i.e. player, world, enemy) */
     void update(float deltaTime);
 
-    Sprite _player;
+    AnimatedSprite _player;
 };
 
 #endif

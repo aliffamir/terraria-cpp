@@ -32,7 +32,9 @@ void Game::gameLoop()
     Input input;
     SDL_Event event;
 
-    _player = Sprite(graphics, "../assets/sprites/walk.png", 0, 128, 64, 64, 100, 100);
+    _player = AnimatedSprite(graphics, "../assets/sprites/walk.png", 0, 64, 64, 64, 100, 100, 100);
+    _player.setupAnimations();
+    _player.playAnimation("WalkLeft");
 
     int LAST_UPDATE_TIME = static_cast<int>(SDL_GetTicks());
     while (true)
@@ -47,6 +49,22 @@ void Game::gameLoop()
                 if (event.key.repeat == 0)
                 {
                     input.keyDownEvent(event);
+                }
+                if (event.key.keysym.sym == SDLK_DOWN)
+                {
+                    _player.playAnimation("WalkDown");
+                }
+                else if (event.key.keysym.sym == SDLK_UP)
+                {
+                    _player.playAnimation("WalkUp");
+                }
+                else if (event.key.keysym.sym == SDLK_RIGHT)
+                {
+                    _player.playAnimation("WalkRight");
+                }
+                else if (event.key.keysym.sym == SDLK_LEFT)
+                {
+                    _player.playAnimation("WalkLeft");
                 }
             }
             else if (event.type == SDL_KEYUP)
@@ -83,6 +101,7 @@ void Game::draw(Graphics& graphics)
     graphics.flip();
 }
 
-void Game::update(float deltaTime)
+void Game::update(float elapsedTime)
 {
+    _player.update(elapsedTime);
 }
