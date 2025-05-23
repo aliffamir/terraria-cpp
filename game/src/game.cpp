@@ -33,8 +33,8 @@ void Game::gameLoop()
     SDL_Event event;
 
     _player = AnimatedSprite(graphics, "../assets/sprites/walk.png", 0, 64, 64, 64, 100, 100, 100);
-    _player.setupAnimations();
-    _player.playAnimation("WalkLeft");
+    // _player.setupAnimations();
+    // _player.playAnimation("WalkLeft");
 
     int LAST_UPDATE_TIME = static_cast<int>(SDL_GetTicks());
     while (true)
@@ -44,34 +44,7 @@ void Game::gameLoop()
             // reset our pressed and released keys every frame
             input.beginNewFrame();
 
-            if (event.type == SDL_KEYDOWN)
-            {
-                if (event.key.repeat == 0)
-                {
-                    input.keyDownEvent(event);
-                }
-                if (event.key.keysym.sym == SDLK_DOWN)
-                {
-                    _player.playAnimation("WalkDown");
-                }
-                else if (event.key.keysym.sym == SDLK_UP)
-                {
-                    _player.playAnimation("WalkUp");
-                }
-                else if (event.key.keysym.sym == SDLK_RIGHT)
-                {
-                    _player.playAnimation("WalkRight");
-                }
-                else if (event.key.keysym.sym == SDLK_LEFT)
-                {
-                    _player.playAnimation("WalkLeft");
-                }
-            }
-            else if (event.type == SDL_KEYUP)
-            {
-                input.keyUpEvent(event);
-            }
-            else if (event.type == SDL_QUIT)
+            if (event.type == SDL_QUIT)
             {
                 return;
             }

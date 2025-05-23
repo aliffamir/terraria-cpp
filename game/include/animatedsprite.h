@@ -35,21 +35,15 @@ class AnimatedSprite : public Sprite
      */
     void draw(Graphics& graphics, int x, int y);
 
-    /*
-     void setupAnimations
-     A required function that sets up all animations for a sprite
-     */
-    virtual void setupAnimations();
-
   protected:
     float _timeToUpdate;
     bool _currentAnimationOnce;
     std::string _currentAnimation;
 
     /*
-     void addAnimation
-     Adds an animation to the _animations map
-     */
+    void addAnimation
+    Adds an animation to the _animations map
+    */
     void addAnimation(int frames, int x, int y, std::string animationName, int width, int height, Vector2 offset);
 
     void resetAnimations();
@@ -59,10 +53,16 @@ class AnimatedSprite : public Sprite
     void setVisible(bool visible);
 
     /*
-     void animationDone
-     Logic that happens when an animation is done
-     */
+    void animationDone
+    Logic that happens when an animation is done
+    */
     virtual void animationDone(std::string currentAnimation);
+
+    /*
+     void setupAnimations
+     A required function that sets up all animations for a sprite
+     */
+    virtual void setupAnimations();
 
   private:
     std::map<std::string, std::vector<SDL_Rect>> _animations;
