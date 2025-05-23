@@ -97,11 +97,3 @@ void AnimatedSprite::draw(Graphics& graphics, int x, int y)
 void AnimatedSprite::animationDone(std::string currentAnimation)
 {
 }
-
-void AnimatedSprite::setupAnimations()
-{
-    addAnimation(9, 0, 64, "WalkLeft", 64, 64, Vector2{0, 0});
-    addAnimation(9, 0, 192, "WalkRight", 64, 64, Vector2{0, 0});
-    addAnimation(9, 0, 128, "WalkDown", 64, 64, Vector2{0, 0});
-    addAnimation(9, 0, 0, "WalkUp", 64, 64, Vector2{0, 0});
-}
