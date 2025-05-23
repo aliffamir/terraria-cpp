@@ -1,6 +1,7 @@
 #include "game.h"
 #include "graphics.h"
 #include "input.h"
+#include "player.h"
 #include <SDL2/SDL.h>
 #include <SDL2_image/SDL_image.h>
 #include <algorithm>
@@ -32,9 +33,7 @@ void Game::gameLoop()
     Input input;
     SDL_Event event;
 
-    _player = AnimatedSprite(graphics, "../assets/sprites/walk.png", 0, 64, 64, 64, 100, 100, 100);
-    // _player.setupAnimations();
-    // _player.playAnimation("WalkLeft");
+    _player = Player(graphics, 100, 100);
 
     int LAST_UPDATE_TIME = static_cast<int>(SDL_GetTicks());
     while (true)
@@ -60,17 +59,14 @@ void Game::gameLoop()
         update(std::min(ELAPSED_TIME_MS, MAX_FRAME_TIME));
         LAST_UPDATE_TIME = CURRENT_TIME_MS;
 
-        // draw(graphics);
-        graphics.clear();
-        _player.draw(graphics, 100, 100);
-        graphics.flip();
+        draw(graphics);
     }
 }
 
 void Game::draw(Graphics& graphics)
 {
     graphics.clear();
-    _player.draw(graphics, 100, 100);
+    _player.draw(graphics);
     graphics.flip();
 }
 

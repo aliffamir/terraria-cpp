@@ -7,6 +7,7 @@
 class Player : public AnimatedSprite
 {
   public:
+    Player() = default;
     Player(Graphics& graphics, float x, float y);
     void draw(Graphics& graphics);
     void update(float elapsedTime);

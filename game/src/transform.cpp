@@ -10,7 +10,7 @@ void Transform::TranslateX(float x)
     _x += x;
 }
 
-void Transform::TranslateX(float y)
+void Transform::TranslateY(float y)
 {
     _y += y;
 }

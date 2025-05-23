@@ -5,6 +5,8 @@ Player::Player(Graphics& graphics, float x, float y)
     : AnimatedSprite{graphics, "../assets/sprites/walk.png", 0, 64, 64, 64, x, y, 100}
 {
     graphics.loadImage("../assets/sprites/walk.png");
+    setupAnimations();
+    playAnimation("WalkLeft");
 }
 
 void Player::setupAnimations()

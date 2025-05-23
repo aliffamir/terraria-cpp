@@ -62,7 +62,7 @@ class AnimatedSprite : public Sprite
      void setupAnimations
      A required function that sets up all animations for a sprite
      */
-    virtual void setupAnimations();
+    virtual void setupAnimations() = 0;
 
   private:
     std::map<std::string, std::vector<SDL_Rect>> _animations;
