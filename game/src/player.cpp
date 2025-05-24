@@ -16,8 +16,8 @@ Player::Player(Graphics& graphics, float x, float y)
 
 void Player::setupAnimations()
 {
-    addAnimation(2, 0, 64, "IdleLeft", 64, 64, Vector2{0, 0});
-    addAnimation(2, 0, 128, "IdleRight", 64, 64, Vector2{0, 0});
+    addAnimation(1, 0, 64, "IdleLeft", 64, 64, Vector2{0, 0});
+    addAnimation(1, 0, 192, "IdleRight", 64, 64, Vector2{0, 0});
     addAnimation(9, 0, 64, "WalkLeft", 64, 64, Vector2{0, 0});
     addAnimation(9, 0, 192, "WalkRight", 64, 64, Vector2{0, 0});
 }

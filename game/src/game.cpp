@@ -42,8 +42,15 @@ void Game::gameLoop()
         {
             // reset our pressed and released keys every frame
             input.beginNewFrame();
-
-            if (event.type == SDL_QUIT)
+            if (event.type == SDL_KEYDOWN)
+            {
+                input.keyDownEvent(event);
+            }
+            else if (event.type == SDL_KEYUP)
+            {
+                input.keyUpEvent(event);
+            }
+            else if (event.type == SDL_QUIT)
             {
                 return;
             }
@@ -52,6 +59,19 @@ void Game::gameLoop()
         if (input.wasKeyPressed(SDL_SCANCODE_ESCAPE))
         {
             return;
+        }
+        else if (input.isKeyHeld(SDL_SCANCODE_LEFT) == true)
+        {
+            _player.moveLeft();
+        }
+        else if (input.isKeyHeld(SDL_SCANCODE_RIGHT) == true)
+        {
+            _player.moveRight();
+        }
+
+        if (!input.isKeyHeld(SDL_SCANCODE_LEFT) && !input.isKeyHeld(SDL_SCANCODE_RIGHT))
+        {
+            _player.stopMoving();
         }
 
         const int CURRENT_TIME_MS{static_cast<int>(SDL_GetTicks())};
